@@ -28,6 +28,7 @@ NORI_NAMESPACE_BEGIN
 class Diffuse : public BSDF {
 public:
     Diffuse(const PropertyList &propList) {
+        // If not exist, then insert Color3f(0.5) to the reflectance
         m_albedo = propList.getColor("albedo", Color3f(0.5f));
     }
 
@@ -94,10 +95,11 @@ public:
             "]", m_albedo.toString());
     }
 
-    EClassType getClassType() const { return EBSDF; }
+    EClassType getClassType() const  { return EBSDF; }
 private:
     Color3f m_albedo;
 };
 
+// Diffuse 라는 매크로 선언
 NORI_REGISTER_CLASS(Diffuse, "diffuse");
 NORI_NAMESPACE_END

@@ -104,6 +104,7 @@ Point3f Mesh::getCentroid(uint32_t index) const {
 void Mesh::addChild(NoriObject *obj) {
     switch (obj->getClassType()) {
         case EBSDF:
+            // 이전에 bsdf 가 nested 되어있는지 확인하는 작업
             if (m_bsdf)
                 throw NoriException(
                     "Mesh: tried to register multiple BSDF instances!");
@@ -111,6 +112,14 @@ void Mesh::addChild(NoriObject *obj) {
             break;
 
         case EEmitter: {
+                // 위와 동일하게 nested emitter인지 
+                /*
+                ex) <emitter ~~~> 
+                        <emitter ~~~>
+                        </emitter>
+                    </emitter>
+                */
+                // 이런꼴 방지
                 Emitter *emitter = static_cast<Emitter *>(obj);
                 if (m_emitter)
                     throw NoriException(
