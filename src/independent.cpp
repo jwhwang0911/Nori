@@ -42,7 +42,8 @@ public:
         std::unique_ptr<Independent> cloned(new Independent());
         cloned->m_sampleCount = m_sampleCount;
         cloned->m_random = m_random;
-        return std::move(cloned);
+        std::unique_ptr<Independent> temp = std::move(cloned);
+        return temp;
     }
 
     void prepare(const ImageBlock &block) {
