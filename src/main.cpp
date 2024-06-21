@@ -29,6 +29,7 @@
 #include <tbb/blocked_range.h>
 #include <filesystem/resolver.h>
 #include <thread>
+#include <time.h>
 
 using namespace nori;
 
@@ -80,7 +81,12 @@ static void render(Scene *scene, const std::string &filename) {
     NoriScreen *screen = new NoriScreen(result);
 
     /* Do the following in parallel and asynchronously */
+    clock_t start, finish;
+    start = clock();
+
+
     std::thread render_thread([&] {
+
         cout << "Rendering .. ";
         cout.flush();
         Timer timer;
@@ -96,6 +102,7 @@ static void render(Scene *scene, const std::string &filename) {
             /* Create a clone of the sampler for the current thread */
             std::unique_ptr<Sampler> sampler(scene->getSampler()->clone());
 
+
             for (int i=range.begin(); i<range.end(); ++i) {
                 /* Request an image block from the block generator */
                 blockGenerator.next(block);
@@ -110,6 +117,7 @@ static void render(Scene *scene, const std::string &filename) {
                    the "big" block that represents the entire image */
                 result.put(block);
             }
+       
         };
 
         /// Uncomment the following line for single threaded rendering
@@ -120,6 +128,9 @@ static void render(Scene *scene, const std::string &filename) {
 
         cout << "done. (took " << timer.elapsedString() << ")" << endl;
     });
+
+    finish = clock();
+    cout << (double)(finish - start) /CLOCKS_PER_SEC;    
 
     /* Enter the application main loop */
     nanogui::mainloop();

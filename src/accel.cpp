@@ -18,6 +18,7 @@
 
 #include <nori/accel.h>
 #include <Eigen/Geometry>
+#include <iostream>
 
 NORI_NAMESPACE_BEGIN
 
@@ -26,10 +27,13 @@ void Accel::addMesh(Mesh *mesh) {
         throw NoriException("Accel: only a single mesh is supported!");
     m_mesh = mesh;
     m_bbox = m_mesh->getBoundingBox();
+    std::cout << m_bbox.toString() << std::endl;
 }
 
 void Accel::build() {
     /* Nothing to do here for now */
+    root = new OcTree(this->m_bbox);
+    
 }
 
 bool Accel::rayIntersect(const Ray3f &ray_, Intersection &its, bool shadowRay) const {
